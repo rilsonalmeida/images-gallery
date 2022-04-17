@@ -1,6 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/Header';
 import Search from './components/Search';
+import ImageCard from './components/ImageCard';
+import { Container, Row, Col } from 'react-bootstrap';
 
 import { useState } from 'react';
 
@@ -10,6 +12,10 @@ function App() {
   const [word, setWord] = useState('');
   const [images, setImages] = useState([]);
 
+  const handleDeleteImage = (id) => {
+    setImages(images.filter((image) => image.id !== id));
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetch(
@@ -17,7 +23,7 @@ function App() {
     )
       .then((res) => res.json())
       .then((data) => {
-        setImages([data, ...images]);
+        setImages([{ ...data, title: word }, ...images]);
       })
       .catch((err) => console.log(err));
     setWord('');
@@ -27,6 +33,15 @@ function App() {
     <div>
       <Header title="Images Gallery" />
       <Search word={word} setWord={setWord} handleSubmit={handleSearchSubmit} />
+      <Container className="mt-4">
+        <Row xs={1} md={2} lg={3}>
+          {images.map((image, i) => (
+            <Col className="pb-3" key={i}>
+              <ImageCard image={image} deleteImage={handleDeleteImage} />
+            </Col>
+          ))}
+        </Row>
+      </Container>
     </div>
   );
 }
