@@ -7,13 +7,21 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 import axios from 'axios';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
 
 function App() {
   const [word, setWord] = useState('');
   const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    async function getSavedImages() {
+      const res = await axios.get(`${API_URL}/images`);
+      setImages(res.data || []);
+    }
+    getSavedImages();
+  }, []);
 
   const handleDeleteImage = (id) => {
     setImages(images.filter((image) => image.id !== id));
