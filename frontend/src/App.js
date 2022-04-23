@@ -27,6 +27,7 @@ function App() {
       toast.success('Saved images downloaded !');
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -35,11 +36,17 @@ function App() {
   const handleDeleteImage = async (id) => {
     try {
       const res = await axios.delete(`${API_URL}/images/${id}`);
+      toast.warn(
+        `Image ${images
+          .find((i) => i.id === id)
+          .title.toUpperCase()} was deleted`
+      );
       if (res.data?.deleted_id) {
         setImages(images.filter((image) => image.id !== id));
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -55,9 +62,11 @@ function App() {
             return image.id === id ? { ...image, saved: true } : image;
           })
         );
+        toast.info(`Image ${imageToBeSaved.title.toUpperCase()} was saved`);
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -67,8 +76,10 @@ function App() {
     try {
       const res = await axios.get(`${API_URL}/new-image?query=${word}`);
       setImages([{ ...res.data, title: word }, ...images]);
+      toast.info(`New image ${word.toUpperCase()} was found`);
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
     setWord('');
   };
