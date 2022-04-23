@@ -1,10 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header';
 import Search from './components/Search';
 import ImageCard from './components/ImageCard';
 import Spinner from './components/Spinner';
 import Welcome from './components/Welcome';
 import { Container, Row, Col } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
 
 import axios from 'axios';
 
@@ -17,14 +19,18 @@ function App() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function getSavedImages() {
+  const getSavedImages = async () => {
+    try {
       const res = await axios.get(`${API_URL}/images`);
       setImages(res.data || []);
       setLoading(false);
+      toast.success('Saved images downloaded !');
+    } catch (error) {
+      console.log(error);
     }
-    getSavedImages();
-  }, []);
+  };
+
+  useEffect(() => getSavedImages, []);
 
   const handleDeleteImage = async (id) => {
     try {
@@ -98,6 +104,7 @@ function App() {
           </Container>{' '}
         </>
       )}
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }
